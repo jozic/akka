@@ -4,12 +4,11 @@
 package akka.zeromq
 
 import org.zeromq.{ ZMQ ⇒ JZMQ }
-import org.zeromq.ZMQ.Poller
 import akka.actor._
 import akka.pattern.ask
 import scala.collection.immutable
 import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 import java.util.concurrent.TimeUnit
 import akka.util.Timeout
 import org.zeromq.ZMQException
@@ -45,8 +44,8 @@ object ZeroMQExtension extends ExtensionId[ZeroMQExtension] with ExtensionIdProv
  */
 class ZeroMQExtension(system: ActorSystem) extends Extension {
 
-  val DefaultPollTimeout: FiniteDuration = Duration(system.settings.config.getMilliseconds("akka.zeromq.poll-timeout"), TimeUnit.MILLISECONDS)
-  val NewSocketTimeout: Timeout = Timeout(Duration(system.settings.config.getMilliseconds("akka.zeromq.new-socket-timeout"), TimeUnit.MILLISECONDS))
+  val DefaultPollTimeout: FiniteDuration = system.settings.config.getDuration("akka.zeromq.poll-timeout", TimeUnit.MILLISECONDS).millis
+  val NewSocketTimeout: Timeout = Timeout(system.settings.config.getDuration("akka.zeromq.new-socket-timeout", TimeUnit.MILLISECONDS))
 
   val pollTimeUnit = if (version.major >= 3) TimeUnit.MILLISECONDS else TimeUnit.MICROSECONDS
 

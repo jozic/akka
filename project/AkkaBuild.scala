@@ -171,7 +171,7 @@ object AkkaBuild extends Build {
     id = "akka-testkit",
     base = file("akka-testkit"),
     dependencies = Seq(actor),
-    settings = defaultSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.testkit ++ Seq(
+    settings = defaultSettings ++ noWarningsSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.testkit ++ Seq(
       libraryDependencies ++= Dependencies.testkit,
       initialCommands += "import akka.testkit._",
       previousArtifact := akkaPreviousArtifact("akka-testkit")
@@ -248,7 +248,7 @@ object AkkaBuild extends Build {
     id = "akka-slf4j",
     base = file("akka-slf4j"),
     dependencies = Seq(actor, testkit % "test->test"),
-    settings = defaultSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.slf4j ++ Seq(
+    settings = defaultSettings ++ noWarningsSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.slf4j ++ Seq(
       libraryDependencies ++= Dependencies.slf4j,
       previousArtifact := akkaPreviousArtifact("akka-slf4j")
     )
@@ -268,7 +268,7 @@ object AkkaBuild extends Build {
     id = "akka-transactor",
     base = file("akka-transactor"),
     dependencies = Seq(actor, testkit % "test->test"),
-    settings = defaultSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.transactor ++ Seq(
+    settings = defaultSettings ++ noWarningsSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.transactor ++ Seq(
       libraryDependencies ++= Dependencies.transactor,
       previousArtifact := akkaPreviousArtifact("akka-transactor")
     )
@@ -320,7 +320,7 @@ object AkkaBuild extends Build {
     id = "akka-zeromq",
     base = file("akka-zeromq"),
     dependencies = Seq(actor, testkit % "test;test->test"),
-    settings = defaultSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.zeroMQ ++ Seq(
+    settings = defaultSettings ++ noWarningsSettings ++ formatSettings ++ scaladocSettings ++ javadocSettings ++ OSGi.zeroMQ ++ Seq(
       libraryDependencies ++= Dependencies.zeroMQ,
       previousArtifact := akkaPreviousArtifact("akka-zeromq")
     )
@@ -330,7 +330,7 @@ object AkkaBuild extends Build {
     id = "akka-kernel",
     base = file("akka-kernel"),
     dependencies = Seq(actor, testkit % "test->test"),
-    settings = defaultSettings ++ formatSettings ++ scaladocSettingsNoVerificationOfDiagrams ++ javadocSettings ++ Seq(
+    settings = defaultSettings ++ noWarningsSettings ++ formatSettings ++ scaladocSettingsNoVerificationOfDiagrams ++ javadocSettings ++ Seq(
       libraryDependencies ++= Dependencies.kernel,
       previousArtifact := akkaPreviousArtifact("akka-kernel")
     )
@@ -760,6 +760,8 @@ object AkkaBuild extends Build {
       Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
     else Seq.empty
   }
+
+  lazy val noWarningsSettings = Seq(scalacOptions in Compile ++= Seq("-Xfatal-warnings"))
 
   lazy val defaultSettings = baseSettings ++ mimaSettings ++ resolverSettings ++
     Protobuf.settings ++ Seq(
