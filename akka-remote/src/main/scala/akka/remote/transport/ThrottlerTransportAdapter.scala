@@ -145,7 +145,7 @@ object ThrottlerTransportAdapter {
   }
 
   /**
-   * Management Command to force dissocation of an address.
+   * Management Command to force dissociation of an address.
    */
   @SerialVersionUID(1L)
   case class ForceDisassociate(address: Address)
@@ -281,17 +281,14 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport) extends A
   }
 
   private def askModeWithDeathCompletion(target: ActorRef, mode: ThrottleMode)(implicit timeout: Timeout): Future[SetThrottleAck.type] = {
-    if (target.isTerminated) Future successful SetThrottleAck
-    else {
-      val internalTarget = target.asInstanceOf[InternalActorRef]
-      val ref = PromiseActorRef(internalTarget.provider, timeout, target.toString)
-      internalTarget.sendSystemMessage(Watch(internalTarget, ref))
-      target.tell(mode, ref)
-      ref.result.future.transform({
-        case Terminated(t) if t.path == target.path ⇒ SetThrottleAck
-        case SetThrottleAck                         ⇒ { internalTarget.sendSystemMessage(Unwatch(target, ref)); SetThrottleAck }
-      }, t ⇒ { internalTarget.sendSystemMessage(Unwatch(target, ref)); t })(ref.internalCallingThreadExecutionContext)
-    }
+    val internalTarget = target.asInstanceOf[InternalActorRef]
+    val ref = PromiseActorRef(internalTarget.provider, timeout, target.toString)
+    internalTarget.sendSystemMessage(Watch(internalTarget, ref))
+    target.tell(mode, ref)
+    ref.result.future.transform({
+      case Terminated(t) if t.path == target.path ⇒ SetThrottleAck
+      case SetThrottleAck                         ⇒ { internalTarget.sendSystemMessage(Unwatch(target, ref)); SetThrottleAck }
+    }, t ⇒ { internalTarget.sendSystemMessage(Unwatch(target, ref)); t })(ref.internalCallingThreadExecutionContext)
   }
 
   private def wrapHandle(originalHandle: AssociationHandle, listener: AssociationEventListener, inbound: Boolean): ThrottlerHandle = {

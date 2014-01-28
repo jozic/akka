@@ -162,7 +162,7 @@ object AkkaBuild extends Build {
     id = "akka-dataflow",
     base = file("akka-dataflow"),
     dependencies = Seq(testkit % "test->test"),
-    settings = defaultSettings ++ formatSettings ++ scaladocSettingsNoVerificationOfDiagrams  ++ OSGi.dataflow ++ cpsPlugin ++ Seq(
+    settings = defaultSettings ++ noWarningsSettings ++ formatSettings ++ scaladocSettingsNoVerificationOfDiagrams  ++ OSGi.dataflow ++ cpsPlugin ++ Seq(
       previousArtifact := akkaPreviousArtifact("akka-dataflow")
     )
   )
@@ -182,7 +182,7 @@ object AkkaBuild extends Build {
     id = "akka-actor-tests",
     base = file("akka-actor-tests"),
     dependencies = Seq(testkit % "compile;test->test"),
-    settings = defaultSettings ++ formatSettings ++ scaladocSettings  ++ Seq(
+    settings = defaultSettings ++ noWarningsSettings ++ formatSettings ++ scaladocSettings  ++ Seq(
       publishArtifact in Compile := false,
       libraryDependencies ++= Dependencies.actorTests,
       testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),

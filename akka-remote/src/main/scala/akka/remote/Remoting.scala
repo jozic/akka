@@ -221,7 +221,7 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
   protected def useUntrustedMode: Boolean = provider.remoteSettings.UntrustedMode
 
   // Not used anywhere only to keep compatibility with RemoteTransport interface
-  protected def logRemoteLifeCycleEvents: Boolean = LogRemoteLifecycleEvents
+  protected def logRemoteLifeCycleEvents: Boolean = RemoteLifecycleEventsLogLevel >= Logging.ErrorLevel
 
 }
 
